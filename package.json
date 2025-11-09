@@ -1,0 +1,53 @@
+{
+  "name": "axzora-chat-backend",
+  "version": "1.0.0",
+  "description": "Backend API for Axzora Chat - Hybrid Database Architecture",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "test:connections": "node test-connections.js",
+    "check:env": "node check-env.js",
+    "fix:encoding": "node fix-env-encoding.js",
+    "validate:env": "node validate-env.js",
+    "test:postgres-dns": "node test-postgres-dns.js",
+    "verify:supabase": "node verify-supabase.js",
+    "init:db": "node src/database/init-db.js",
+    "init:mongo-indexes": "node src/database/init-mongodb-indexes.js",
+    "init:mongo-schema": "node src/database/init-mongodb-schema.js",
+    "init:all": "node src/database/init-all.js",
+    "reset:all": "node scripts/reset-all-data.js",
+    "reset:db": "node scripts/reset-database.js",
+    "reset:mongo": "node scripts/reset-mongodb.js",
+    "reset:redis": "node scripts/reset-redis.js",
+    "add:default-contacts": "node scripts/add-default-contacts.js"
+  },
+  "keywords": [
+    "chat",
+    "whatsapp-clone",
+    "real-time"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "agora-token": "^2.0.5",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-rate-limit": "^7.1.5",
+    "helmet": "^7.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.3.0",
+    "multer": "^1.4.5-lts.1",
+    "pg": "^8.11.3",
+    "redis": "^4.6.10",
+    "socket.io": "^4.6.1",
+    "validator": "^13.11.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}
