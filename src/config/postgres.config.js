@@ -163,16 +163,31 @@ const updatePoolStats = () => {
     errors: poolStats.errors,
     lastError: poolStats.lastError,
     lastHealthCheck: new Date(),
-    isHealthy: postgresPool.totalCount > 0 && postgresPool.idleCount >= MIN_POOL_SIZE,
+    // Pool is healthy if:
+    // - Has connections when MIN_POOL_SIZE > 0, OR
+    // - MIN_POOL_SIZE is 0 (connections created on-demand, so 0 is OK when idle)
+    isHealthy: MIN_POOL_SIZE === 0 ? true : (postgresPool.totalCount > 0 && postgresPool.idleCount >= MIN_POOL_SIZE),
   };
 };
 
 // Health check interval - every 30 seconds
 setInterval(() => {
   updatePoolStats();
-  if (!poolStats.isHealthy && poolStats.totalConnections === 0) {
-    console.warn('⚠️  PostgreSQL pool health check: No connections available');
+  // Only warn if there are actual issues:
+  // 1. Waiting clients (queries being blocked) - this is a real problem
+  // 2. No connections when MIN_POOL_SIZE > 0 (should maintain connections but don't)
+  // Don't warn if MIN_POOL_SIZE is 0 and no connections (this is expected - connections created on-demand)
+  const hasWaitingClients = poolStats.waitingClients > 0;
+  const shouldHaveConnections = MIN_POOL_SIZE > 0 && poolStats.totalConnections === 0;
+  
+  if (hasWaitingClients) {
+    console.warn(`⚠️  PostgreSQL pool health check: ${poolStats.waitingClients} waiting client(s) - queries may be delayed`);
+  } else if (shouldHaveConnections) {
+    // Only warn if we should have connections (MIN_POOL_SIZE > 0) but don't
+    console.warn(`⚠️  PostgreSQL pool health check: No connections available (expected ${MIN_POOL_SIZE} minimum)`);
   }
+  // If MIN_POOL_SIZE is 0 and no connections, this is normal - don't warn
+  
   // For Supabase: Log connection stats to help debug
   if (isSupabase && poolStats.totalConnections > 0) {
     if (poolStats.totalConnections >= POOL_SIZE) {
