@@ -78,6 +78,7 @@ app.get('/api', (req, res) => {
   res.json({
     message: 'Axzora Chat API',
     version: '1.0.0',
+    productionUrl: 'https://server-i81g.onrender.com',
     endpoints: {
       health: '/health',
       auth: '/api/auth',
