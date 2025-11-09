@@ -32,7 +32,12 @@ Backend API for Axzora Chat - Hybrid Database Architecture
 
 ## Environment Variables
 
-See `.env.example` for required environment variables.
+See `env.example` for required environment variables.
+
+**Important URLs:**
+- `PRODUCTION_URL`: Production server URL (default: https://server-i81g.onrender.com)
+- `BASE_URL`: Base URL for file uploads and API endpoints (default: https://server-i81g.onrender.com)
+- `FRONTEND_URL`: Frontend application URL for invite links
 
 ## Installation
 

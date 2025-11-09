@@ -122,7 +122,7 @@ export const uploadMessageFile = messageUpload.single('file');
 // Helper to get file URL
 export const getFileUrl = (req, filename) => {
   if (!filename) return null;
-  const baseUrl = process.env.BASE_URL || `http://localhost:${process.env.PORT || 3000}`;
+  const baseUrl = process.env.BASE_URL || process.env.PRODUCTION_URL || `https://server-i81g.onrender.com`;
   return `${baseUrl}/uploads/${filename}`;
 };
 
