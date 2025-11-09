@@ -9,20 +9,31 @@ RUN apk add --no-cache curl
 COPY package*.json ./
 
 # Install dependencies
-RUN npm ci --only=production
+# Use npm ci if package-lock.json exists, otherwise use npm install
+RUN if [ -f package-lock.json ]; then \
+      npm ci --only=production; \
+    else \
+      npm install --only=production; \
+    fi
 
 # Copy application code
 COPY . .
 
+# Make health check script executable
+RUN chmod +x healthcheck.sh
+
 # Create uploads directory with proper permissions
 RUN mkdir -p uploads && chmod 755 uploads
 
-# Expose port
+# Expose port (default 3000, can be overridden via PORT env variable at runtime)
 EXPOSE 3000
 
-# Health check
+# Set NODE_ENV to production if not set
+ENV NODE_ENV=production
+
+# Health check - uses PORT env variable or defaults to 3000
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-  CMD curl -f http://localhost:3000/health || exit 1
+  CMD ./healthcheck.sh
 
 # Start application
 CMD ["node", "src/server.js"]
